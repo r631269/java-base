@@ -1,6 +1,6 @@
 # Lightweight base image for running HealthSparq Java JVM services
 # Based on Alpine linux image then adds Oracle's JRE
-# This container has external dependencies for building, but none at runtime 
+# This container has external dependencies for building, but none at runtime
 
 FROM alpine
 MAINTAINER Dan Anolik <dan.anolik@healthsparq.com>
@@ -31,7 +31,7 @@ RUN  mkdir /opt && \
       http://download.oracle.com/otn-pub/java/jdk/${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-b${JAVA_VERSION_BUILD}/${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz && \
     gunzip /tmp/java.tar.gz && \
     tar -C /opt -xf /tmp/java.tar && \
-    apk del glibc-i18n curl && \
+    #apk del glibc-i18n curl && \
     ln -s /opt/jdk1.${JAVA_VERSION_MAJOR}.0_${JAVA_VERSION_MINOR} /opt/jdk && \
     find /opt/jdk/ -maxdepth 1 -mindepth 1 | grep -v jre | xargs rm -rf && \
     cd /opt/jdk/ && ln -s ./jre/bin ./bin && \
@@ -64,6 +64,15 @@ RUN  mkdir /opt && \
            /opt/jdk/jre/lib/oblique-fonts \
            /opt/jdk/jre/lib/plugin.jar \
            /tmp/* /var/cache/apk/*
+
+# Download Java Cryptography Extension
+RUN mkdir -p /opt/jdk/jre/lib/security && \
+    curl -jksSLH "Cookie: oraclelicense=accept-securebackup-cookie" -o /tmp/jce_policy-${JAVA_VERSION_MAJOR}.zip \
+      http://download.oracle.com/otn-pub/java/jce/${JAVA_VERSION_MAJOR}/jce_policy-${JAVA_VERSION_MAJOR}.zip && \
+    unzip -d /tmp/ /tmp/jce_policy-${JAVA_VERSION_MAJOR}.zip && \
+    yes |cp -v /tmp/UnlimitedJCEPolicyJDK${JAVA_VERSION_MAJOR}/*.jar /opt/jdk/jre/lib/security/ && \
+    rm -fr /tmp/* && \
+    apk del glibc-i18n curl
 
 # Avahi recommended setting for DNS resolution
 RUN echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' >> /etc/nsswitch.conf
