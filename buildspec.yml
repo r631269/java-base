@@ -21,10 +21,10 @@ phases:
         commands:
             - echo Build complete
 #            - docker push deleteme ecr
-artifacts:
-    files:
-        - package.json
-        - index.js
-    discard-paths: yes
-    #base-directory: /var/www/
-
+#artifacts:
+#    files:
+#        - package.json
+#        - index.js
+#    discard-paths: yes
+#    #base-directory: /var/www/
+#
