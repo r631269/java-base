@@ -8,19 +8,20 @@ phases:
 #    install:
 #        commands:
 #            - npm install
-#    pre_build:
-#        commands:
-#            - npm test
+    pre_build:
+        commands:
+            - echo Logging in to Amazon ECR...
+            - $(aws ecr get-login --region $AWS_DEFAULT_REGION)
     build:
         commands:
             - echo printing env
             - env
             - echo Build started on `date`
-            - docker build -t deleteme ./
+            - docker build -t 366558468214.dkr.ecr.us-west-2.amazonaws.com/java-base:latest ./
     post_build:
         commands:
             - echo Build complete
-#            - docker push deleteme ecr
+            - docker push 366558468214.dkr.ecr.us-west-2.amazonaws.com/java-base:latest
 #artifacts:
 #    files:
 #        - package.json
