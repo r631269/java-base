@@ -1,0 +1,30 @@
+version: 0.1
+
+environment_variables:
+    plaintext:
+        BUILDSPEC_VAR: "example.com"
+
+phases:
+#    install:
+#        commands:
+#            - npm install
+#    pre_build:
+#        commands:
+#            - npm test
+    build:
+        commands:
+            - echo printing env
+            - env
+            - echo Build started on `date`
+            - docker build -t deleteme ./
+    post_build:
+        commands:
+            - echo Build complete
+#            - docker push deleteme ecr
+artifacts:
+    files:
+        - package.json
+        - index.js
+    discard-paths: yes
+    #base-directory: /var/www/
+
